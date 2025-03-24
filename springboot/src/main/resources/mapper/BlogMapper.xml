@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lc.mapper.BlogMapper">
+
+    <select id="selectAll" resultType="com.lc.entity.Blog">
+        select blog.*, user.name as userName from `blog`
+        left join user on blog.user_id = user.id
+        <where>
+            <if test="title != null and title != ''">title like concat('%',#{title},'%')</if>
+            <if test="userId != null">user_id = #{userId}</if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="insert">
+        insert into `blog` (title, content, create_time, img, category_id, user_id)
+        values (#{title}, #{content}, #{createTime}, #{img}, #{categoryId}, #{userId})
+    </insert>
+    
+    <update id="updateById">
+        update `blog` set title = #{title}, content = #{content}, create_time = #{createTime}, img = #{img}, category_id = #{categoryId}, user_id = #{userId}
+        where id = #{id}
+    </update>
+    
+    <select id="selectById" resultType="com.lc.entity.Blog">
+        select * from `blog` where id = #{id}
+    </select>
+</mapper>
