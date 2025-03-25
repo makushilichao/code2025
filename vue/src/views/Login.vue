@@ -63,7 +63,7 @@ const login = () => {
                     localStorage.setItem("code_user", JSON.stringify(res.data || {}));
                     localStorage.setItem('isLoggedIn', 'true');
                     ElMessage.success("登录成功！");
-                    router.push('/manager/home');
+                    router.push('/front');
                 } else {
                     ElMessage.error(res.msg);
                 }

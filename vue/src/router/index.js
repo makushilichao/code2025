@@ -23,6 +23,7 @@ const router = createRouter({
         },
         { path: '/login', component: () => import('../views/Login.vue') },
         { path: '/register', component: () => import('../views/Register.vue') },
+        { path: '/front', component: () => import('../views/Front.vue') },
         { path: '/notFound', component: () => import('../views/404.vue') },
         { path: '/:pathMatch(.*)', redirect: '/notFound' },
     ],

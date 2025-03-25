@@ -4,9 +4,9 @@
         <div class="header" style="height: 60px; display: flex;">
             <div style="width: 240px; display: flex; align-items: center; padding-left: 20px; background-color: #3a456b">
                 <img style="width: 40px; height: 40px; border-radius: 50%" src="@/assets/image/logo.jpg" alt="">
-                <span style="font-size: 20px; font-weight: bold; color: #f1f1f1; margin-left: 5px">代码港湾</span>
+                <span style="font-size: 20px; font-weight: bold; color: #f1f1f1; margin-left: 5px">IT论坛后台系统</span>
             </div>
-            <div style="flex: 1; display: flex; align-items: center; padding-left: 20px; border-bottom: 1px solid #ddd">
+            <div style="flex: 1; display: flex; align-items: center; padding-left: 20px">
                 <span style="margin-right: 5px; cursor: pointer" @click="router.push('/manager/home')">首页</span> /
                 <span style="margin-left: 8px">{{ router.currentRoute.value.meta.name }}</span>
             </div>
@@ -31,8 +31,8 @@
                     <template #dropdown>
                         <el-dropdown-menu>
                             <el-dropdown-item @click="router.push('/manager/person')">个人信息</el-dropdown-item>
-                            <el-dropdown-item @click="router.push('/manager/updatePassword')">修改密码
-                            </el-dropdown-item>
+                            <el-dropdown-item @click="router.push('/manager/updatePassword')">修改密码</el-dropdown-item>
+                            <el-dropdown-item @click="loginOutToFront">返回前台</el-dropdown-item>
                             <el-dropdown-item @click="loginOut">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
@@ -86,7 +86,11 @@
             <!--数据区域结束-->
         </div>
         <!--下方区域结束-->
+
     </div>
+    <footer class="footer">
+        <p>版权所有 &copy; 2025 IT论坛系统</p>
+    </footer>
 </template>
 
 <script setup>
@@ -103,6 +107,10 @@ const value1 = reactive({ value: true })
 const data = reactive({
     user: JSON.parse(localStorage.getItem('code_user') || '{}')
 })
+
+const loginOutToFront = () => {
+    location.href = '/front'
+}
 
 const loginOut = () => {
     localStorage.removeItem('code_user')
