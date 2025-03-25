@@ -85,7 +85,7 @@ const data = reactive({
         ],
         content: [
             {required: true, message: '请输入公告内容', trigger: 'blur'},
-            {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
+            {min: 5, message: '请至少输入5个字符', trigger: 'blur'}
         ]
     }
 })

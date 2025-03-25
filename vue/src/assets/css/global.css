@@ -31,3 +31,38 @@ a {
     z-index: 1000;
     padding: 1px;
 }
+
+.card {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.dark-mode .card {
+    background-color: #333;
+    color: #fff;
+}
+
+.dark-mode .card-title-text-title span {
+    color: #fff;
+}
+
+.dark-mode .el-timeline-item h4,
+.dark-mode .el-timeline-item p {
+    color: #fff;
+}
+
+.dark-mode .card {
+    background-color: #333;
+    color: #fff;
+}
+
+.dark-mode .card-title-text-title span {
+    color: #fff;
+}
+
+.dark-mode .el-timeline-item h4,
+.dark-mode .el-timeline-item p {
+    color: #fff;
+}

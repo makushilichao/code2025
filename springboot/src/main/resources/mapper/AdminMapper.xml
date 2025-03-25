@@ -20,12 +20,12 @@
     </select>
 
     <insert id="insert">
-        insert into `admin` (username, name, phone, email, password, role, avatar)
-        values (#{username}, #{name}, #{phone}, #{email}, #{password}, #{role}, #{avatar})
+        insert into `admin` (username, name, phone, email, password, role, avatar, occupation, address)
+        values (#{username}, #{name}, #{phone}, #{email}, #{password}, #{role}, #{avatar}, #{occupation}, #{address})
     </insert>
     
     <update id="updateById">
-        update `admin` set username = #{username}, name = #{name}, phone = #{phone}, email = #{email}, password = #{password}, avatar = #{avatar}
+        update `admin` set username = #{username}, name = #{name}, phone = #{phone}, email = #{email}, password = #{password}, avatar = #{avatar}, occupation = #{occupation}, address = #{address}
         where id = #{id}
     </update>
     

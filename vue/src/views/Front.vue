@@ -16,13 +16,13 @@
                     <input type="text" placeholder="搜索文章">
                     <button>搜索</button>
                 </div>
-                <el-dropdown>
+                <el-dropdown style="cursor: pointer;">
                     <div style="display: flex; align-items: center">
                         <img v-if="data.user?.avatar" style="width: 40px; height: 40px; border-radius: 50%"
                              :src="data.user?.avatar">
                         <img v-else style="width: 40px; height: 40px"
                              src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" alt="">
-                        <span style="padding-left: 8px">{{ data.user?.name }}</span>
+                        <span style="padding-left: 8px; color: #ffffff">{{ data.user?.name }}</span>
                     </div>
                     <template #dropdown>
                         <el-dropdown-menu>
@@ -81,6 +81,7 @@
         <footer class="footer">
             <p>版权所有 &copy; 2025 IT论坛系统</p>
         </footer>
+        <el-backtop :right="100" :bottom="100" />
     </div>
 </template>
 
@@ -254,4 +255,9 @@ article {
     text-decoration: none;
 }
 
+/* 取消 el-dropdown 悬停时的白色边框 */
+.el-dropdown .el-dropdown__trigger:hover {
+    border: none;
+    outline: none;
+}
 </style>

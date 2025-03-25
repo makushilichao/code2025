@@ -7,8 +7,10 @@
                 <span style="font-size: 20px; font-weight: bold; color: #f1f1f1; margin-left: 5px">IT论坛后台系统</span>
             </div>
             <div style="flex: 1; display: flex; align-items: center; padding-left: 20px">
-                <span style="margin-right: 5px; cursor: pointer" @click="router.push('/manager/home')">首页</span> /
-                <span style="margin-left: 8px">{{ router.currentRoute.value.meta.name }}</span>
+                <el-breadcrumb :separator-icon="ArrowRight">
+                    <el-breadcrumb-item :to="{ path: '/manager/home' }">首 页</el-breadcrumb-item>
+                    <el-breadcrumb-item>{{ router.currentRoute.value.meta.name }}</el-breadcrumb-item>
+                </el-breadcrumb>
             </div>
             <div style="flex: 1; border-bottom: 1px solid #ddd"></div>
             <div style="width: fit-content; display: flex; align-items: center; padding-right: 20px; border-bottom: 1px solid #ddd">
@@ -25,7 +27,7 @@
                         <img v-if="data.user?.avatar" style="width: 40px; height: 40px; border-radius: 50%"
                              :src="data.user?.avatar">
                         <img v-else style="width: 40px; height: 40px"
-                             src="https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png" alt="">
+                             src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt="">
                         <span style="padding-left: 8px">{{ data.user?.name }}</span>
                     </div>
                     <template #dropdown>
@@ -46,7 +48,7 @@
         <div class="main-content" style="display: flex">
             <!--菜单区域开始-->
             <div class="sidebar" style="width: 240px; box-shadow: 0 0 8px rgba(0, 0, 0, .12)">
-                <el-menu router :default-openeds="['1', '2']" :default-active="router.currentRoute.value.path"
+                <el-menu router :default-openeds="['1']" :default-active="router.currentRoute.value.path"
                          style="min-height: calc(100vh - 60px)">
                     <el-menu-item index="/manager/home" >
                         <el-icon>
@@ -70,10 +72,27 @@
                             </el-icon>
                             <span>信息管理</span>
                         </template>
+                        <el-menu-item index="/manager/blog">博客信息</el-menu-item>
+                        <el-menu-item index="/manager/blogCategory">博客分类</el-menu-item>
+                    </el-sub-menu>
+                    <el-sub-menu index="3">
+                        <template #title>
+                            <el-icon><Star /></el-icon>
+                            <span>活动管理</span>
+                        </template>
+                        <el-menu-item index="/manager/activity">活动信息</el-menu-item>
+                        <el-menu-item index="/manager/activityCategory">活动分类</el-menu-item>
+                    </el-sub-menu>
+                    <el-sub-menu index="4">
+                        <template #title>
+                            <el-icon>
+                                <Setting/>
+                            </el-icon>
+                            <span>系统管理</span>
+                        </template>
                         <el-menu-item index="/manager/notice" v-if="data.user.role === 'ADMIN'">系统公告</el-menu-item>
                         <el-menu-item index="/manager/notice" v-else>公告信息</el-menu-item>
-                        <el-menu-item index="/manager/blog">博客信息</el-menu-item>
-                        <el-menu-item index="/manager/category">博客分类</el-menu-item>
+                        <el-menu-item index="/manager/carousel">轮播图设置</el-menu-item>
                     </el-sub-menu>
                 </el-menu>
             </div>
@@ -86,7 +105,6 @@
             <!--数据区域结束-->
         </div>
         <!--下方区域结束-->
-
     </div>
     <footer class="footer">
         <p>版权所有 &copy; 2025 IT论坛系统</p>
@@ -96,7 +114,7 @@
 <script setup>
 import {reactive} from "vue";
 import router from "@/router/index.js";
-import {Sunrise, Sunset} from '@element-plus/icons-vue'
+import {Sunrise, Sunset, ArrowRight } from '@element-plus/icons-vue'
 import {useDark, useToggle} from '@vueuse/core'
 
 const isDark = useDark()
@@ -182,6 +200,25 @@ const updateUser = () => {
     left: 0;
     height: calc(100vh - 60px);
     z-index: 999;
+    overflow-y: auto; /* 添加滚动条 */
+}
+
+/* 滚动条样式 */
+.sidebar::-webkit-scrollbar {
+    width: 8px; /* 滚动条宽度 */
+}
+
+.sidebar::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* 滚动条轨道背景颜色 */
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+    background-color: #888; /* 滚动条滑块颜色 */
+    border-radius: 4px; /* 滚动条滑块圆角 */
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+    background-color: #555; /* 滚动条滑块悬停时的颜色 */
 }
 
 /* 光模式样式 */
@@ -243,5 +280,17 @@ body {
 .dark-mode .el-dropdown-item:hover {
     background-color: #444;
     color: #fff;
+}
+
+.dark-mode .footer {
+    background-color: #333;
+    color: #fff;
+}
+
+/* 确保文字在暗模式下可见 */
+.dark-mode .header span,
+.dark-mode .el-menu-item span,
+.dark-mode .el-sub-menu__title span {
+    color: #ccc;
 }
 </style>
