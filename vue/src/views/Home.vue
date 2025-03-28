@@ -32,7 +32,6 @@
                 </div>
                 <div id="bar" style="width: 100%; height: 380px;"></div>
             </div>
-
         </div>
 
         <div class="card-container">

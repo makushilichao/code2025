@@ -1,14 +1,13 @@
 <template>
     <div id="app">
-        <!-- 头部导航栏 -->
         <header class="header">
             <div class="logo">IT论坛系统</div>
             <nav class="nav">
                 <ul>
-                    <li><a href="#">首页</a></li>
-                    <li><a href="#">热门文章</a></li>
-                    <li><a href="#">最新文章</a></li>
-                    <li><a href="#">分类</a></li>
+                    <li style="padding-right: 10px"><a href="/front">首页</a></li>
+                    <li style="padding-right: 10px"><a href="#">热门文章</a></li>
+                    <li style="padding-right: 10px"><a href="#">最新文章</a></li>
+                    <li style="padding-right: 10px"><a href="#">分类</a></li>
                 </ul>
             </nav>
             <div style="width: fit-content; display: flex; align-items: center; padding-right: 20px">
@@ -27,7 +26,8 @@
                     <template #dropdown>
                         <el-dropdown-menu>
                             <el-dropdown-item @click="router.push('/manager/person')">个人信息</el-dropdown-item>
-                            <el-dropdown-item @click="router.push('/manager/updatePassword')">修改密码</el-dropdown-item>
+                            <el-dropdown-item @click="router.push('/manager/updatePassword')">修改密码
+                            </el-dropdown-item>
                             <el-dropdown-item @click="loginOutToManager">前往后台</el-dropdown-item>
                             <el-dropdown-item @click="loginOut">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
@@ -36,80 +36,117 @@
             </div>
         </header>
 
-        <!-- 轮播图 -->
         <div class="slider">
-            <img src="https://dummyimage.com/1200x400/000/fff" alt="幻灯片1">
-            <img src="https://dummyimage.com/1200x400/000/fff" alt="幻灯片2">
-            <img src="https://dummyimage.com/1200x400/000/fff" alt="幻灯片3">
+            <el-carousel :interval="4000" type="card" height="300px">
+                <el-carousel-item v-for="item in data.carouselData" :key="item.id">
+                    <img :src="item.img" alt="轮播图" style="width: 100%; height: 100%; object-fit: cover;">
+                </el-carousel-item>
+            </el-carousel>
         </div>
 
-        <!-- 文章列表 -->
-        <div class="article-list">
-            <article v-for="(article, index) in articles" :key="index">
-                <h2>{{ article.title }}</h2>
-                <p class="meta">
-                    <span>{{ article.author }}</span>
-                    <span>{{ article.date }}</span>
-                    <span>{{ article.views }} 阅读</span>
-                </p>
-                <p class="summary">{{ article.summary }}</p>
-                <a href="#" class="read-more">阅读全文</a>
-            </article>
+        <div style="padding-left: 20px; flex: 1; margin-bottom: -50px">
+            <h2>精选文章</h2>
+            <el-divider style="margin-top: -10px; width: 75.5%" content="精选文章">
+                <el-icon style="font-size: 20px">
+                    <StarFilled/>
+                </el-icon>
+            </el-divider>
         </div>
 
-        <!-- 侧边栏 -->
-        <aside class="sidebar">
-            <div class="widget">
-                <h3>热门文章</h3>
-                <ul>
-                    <li v-for="(article, index) in hotArticles" :key="index">
-                        <a href="#">{{ article.title }}</a>
-                    </li>
-                </ul>
+        <!-- 新增父容器 -->
+        <div class="article-and-sidebar">
+            <div class="article-list">
+                <article v-for="blog in data.blogData" :key="blog.id" class="article-item">
+                    <div class="article-content">
+                        <h3><a @click="navTo('/front/author?id=' + blog.userId)" style="cursor: pointer">{{ blog.userName }}</a></h3>
+                        <h2><a @click="navTo('/front/content?id=' + blog.id)" style="cursor: pointer">{{ blog.title }}</a></h2>
+                        <p class="meta">
+                            <span>{{ truncateContent(removeHtmlTags(blog.content)) }}</span>
+                        </p>
+                        <p class="summary">{{ blog.summary }}</p>
+                    </div>
+                    <img class="article-image" :src="blog.img" alt="文章图片">
+                </article>
             </div>
-            <div class="widget">
-                <h3>分类</h3>
-                <ul>
-                    <li><a href="#">技术</a></li>
-                    <li><a href="#">生活</a></li>
-                    <li><a href="#">娱乐</a></li>
-                </ul>
-            </div>
-        </aside>
+
+            <!-- 侧边栏 -->
+            <aside class="sidebar">
+                <div class="widget">
+                    <h3>热门文章</h3>
+                    <ul>
+                        <li v-for="(blog, index) in hotArticles" :key="index">
+                            <a href="#">{{ blog.title }}</a>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="widget">
+                    <h3>分类</h3>
+                    <ul>
+                        <li><a href="#">技术</a></li>
+                        <li><a href="#">生活</a></li>
+                        <li><a href="#">娱乐</a></li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
 
         <!-- 底部 -->
         <footer class="footer">
             <p>版权所有 &copy; 2025 IT论坛系统</p>
         </footer>
-        <el-backtop :right="100" :bottom="100" />
+        <el-backtop :right="100" :bottom="100"/>
     </div>
 </template>
 
 <script setup>
-import {reactive, ref} from 'vue';
+import {onMounted, reactive, ref} from 'vue';
 import router from "@/router/index.js";
-
+import request from "../../utils/request.js";
+import {ElMessage} from "element-plus";
+import {StarFilled} from '@element-plus/icons-vue'
 
 const data = reactive({
-    user: JSON.parse(localStorage.getItem('code_user') || '{}')
+    user: JSON.parse(localStorage.getItem('code_user') || '{}'),
+    carouselData: [],
+    blogData: [],
 })
-// 模拟文章数据
-const articles = ref([
-    {
-        title: '文章标题1',
-        author: '作者1',
-        date: '2025-03-25',
-        views: 100,
-        summary: '这是文章的摘要内容1。'
-    },
-    {
-        title: '文章标题2',
-        author: '作者2',
-        date: '2025-03-24',
-        views: 200,
-        summary: '这是文章的摘要内容2。'
+
+const getCarousel = async () => {
+    try {
+        const res = await request.get('/carousel/selectAll');
+        if (res.code === '200') {
+            data.carouselData = res.data.slice(0, 5);
+        } else {
+            ElMessage.error(res.msg);
+        }
+    } catch (error) {
+        ElMessage.error('获取轮播图数据失败');
     }
-]);
+};
+
+onMounted(async () => {
+    await getCarousel();
+});
+
+const blogs = () => {
+    request.get('/blog/selectAll').then(res => {
+        console.log(res)
+        if (res.code === '200') {
+            data.blogData = res.data;
+        } else {
+            ElMessage.error(res.msg);
+        }
+    }).catch(error => {
+        ElMessage.error('获取文章数据失败');
+    })
+}
+
+blogs()
+
+const navTo = (url) => {
+    location.href = url
+}
 
 const loginOutToManager = () => {
     location.href = '/manager/home'
@@ -129,10 +166,23 @@ const hotArticles = ref([
         title: '热门文章标题2'
     }
 ]);
+
+// 截断文章内容
+const truncateContent = (content) => {
+    const maxLength = 100;
+    if (content.length > maxLength) {
+        return content.slice(0, maxLength) + '...';
+    }
+    return content;
+}
+
+// 去除 HTML 标签
+const removeHtmlTags = (html) => {
+    return html.replace(/<[^>]*>/g, '');
+}
 </script>
 
 <style scoped>
-/* 全局样式 */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -145,7 +195,6 @@ body {
     min-height: 100vh;
 }
 
-/* 头部导航栏样式 */
 .header {
     display: flex;
     justify-content: space-between;
@@ -153,6 +202,9 @@ body {
     background-color: #333;
     color: white;
     padding: 10px 20px;
+    position: fixed;
+    width: 100%;
+    z-index: 1000;
 }
 
 .logo {
@@ -196,6 +248,7 @@ body {
     width: 100%;
     height: 400px;
     overflow: hidden;
+    margin-top: 60px;
 }
 
 .slider img {
@@ -204,21 +257,44 @@ body {
     object-fit: cover;
 }
 
-/* 文章列表样式 */
-.article-list {
-    flex: 1;
+/* 文章列表与侧边栏父容器样式 */
+.article-and-sidebar {
+    display: flex;
+    gap: 20px; /* 设置间隔 */
     padding: 20px;
 }
 
-article {
+/* 文章列表样式 */
+.article-list {
+    flex: 1;
+}
+
+.article-item {
+    display: flex;
+    justify-content: space-between;
     margin-bottom: 20px;
     border-bottom: 1px solid #ccc;
     padding-bottom: 20px;
 }
 
+.article-content {
+    flex: 1;
+    max-width: calc(100% - 120px); /* 预留图片宽度 */
+}
+
+.article-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    align-self: flex-start;
+    margin-top: 25px;
+}
+
 .meta {
     color: #777;
     font-size: 14px;
+    max-height: 60px; /* 限制高度 */
+    overflow: hidden;
 }
 
 .read-more {
@@ -259,5 +335,21 @@ article {
 .el-dropdown .el-dropdown__trigger:hover {
     border: none;
     outline: none;
+}
+
+.el-carousel__item h3 {
+    color: #475669;
+    opacity: 0.75;
+    line-height: 200px;
+    margin: 0;
+    text-align: center;
+}
+
+.el-carousel__item:nth-child(2n) {
+    background-color: #99a9bf;
+}
+
+.el-carousel__item:nth-child(2n + 1) {
+    background-color: #d3dce6;
 }
 </style>

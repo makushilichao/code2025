@@ -48,4 +48,9 @@ public class BlogController {
         return Result.success();
     }
 
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable Integer id){
+        Blog blog = blogService.selectById(id);
+        return Result.success(blog);
+    }
 }

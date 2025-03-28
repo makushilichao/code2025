@@ -26,6 +26,8 @@ public class BlogService {
     BlogMapper blogMapper;
     @Resource
     CategoryMapper categoryMapper;
+    @Resource
+    UserMapper userMapper;
 
     public void add(Blog blog) {
         Account currentUser = TokenUtils.getCurrentUser();
@@ -65,4 +67,18 @@ public class BlogService {
         return PageInfo.of(list);
     }
 
+    public Blog selectById(Integer id) {
+        Blog blog = blogMapper.selectById(id);
+        Integer categoryId = blog.getCategoryId();
+        Integer userId = blog.getUserId();
+        Category category = categoryMapper.selectById(categoryId);
+        User user = userMapper.selectById(userId.toString());
+        if(ObjectUtil.isNotEmpty(category)){
+            blog.setCategoryTitle(category.getTitle());
+        }
+        if(ObjectUtil.isNotEmpty(user)){
+            blog.setUserName(user.getName());
+        }
+        return blog;
+    }
 }

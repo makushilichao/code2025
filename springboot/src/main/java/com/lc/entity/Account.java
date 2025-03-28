@@ -15,4 +15,7 @@ public class Account {
     private String avatar;
     private String newPassword;
     private String confirmPassword;
+    private String occupation;
+    private String address;
+    private String adminId;
 }

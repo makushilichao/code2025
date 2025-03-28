@@ -45,13 +45,13 @@
 
         <div class="card" style="margin-bottom: 5px">
             <el-pagination
-                    v-model:current-page="data.pageNum"
-                    v-model:page-size="data.pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :page-sizes="[5, 10, 20, 30]"
-                    :total="data.total"
-                    @current-change="load"
-                    @size-change="load"
+                v-model:current-page="data.pageNum"
+                v-model:page-size="data.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :page-sizes="[5, 10, 20, 30]"
+                :total="data.total"
+                @current-change="load"
+                @size-change="load"
             />
         </div>
 
@@ -59,11 +59,11 @@
             <el-form ref="formRef" :model="data.form">
                 <el-form-item labal="封面" prop="img">
                     <el-upload
-                            action="http://localhost:9999/files/upload"
-                            :show-file-list="false"
-                            :headers="{token: data.user.token}"
-                            :on-success="handleFileSuccess"
-                            list-type="picture"
+                        action="http://localhost:9999/files/upload"
+                        :show-file-list="false"
+                        :headers="{token: data.user.token}"
+                        :on-success="handleFileSuccess"
+                        list-type="picture"
                     >
                         <el-button type="primary">上传封面</el-button>
                     </el-upload>
@@ -90,17 +90,17 @@
                 <el-form-item label="博客内容" prop="content">
                     <div style="border: 1px solid #ccc; width: 100%">
                         <Toolbar
-                                style="border-bottom: 1px solid #ccc;"
-                                :mode="mode"
-                                :editor="editorRef"
+                            style="border-bottom: 1px solid #ccc;"
+                            :mode="mode"
+                            :editor="editorRef"
                         />
                         <Editor
-                                style="height: 200px"
-                                overflow-y="hidden;"
-                                v-model="data.form.content"
-                                :mode="mode"
-                                :defaultConfig="editorConfig"
-                                @onCreated="handleCreated"
+                            style="height: 200px"
+                            overflow-y="hidden;"
+                            v-model="data.form.content"
+                            :mode="mode"
+                            :defaultConfig="editorConfig"
+                            @onCreated="handleCreated"
                         />
                     </div>
                 </el-form-item>
@@ -114,7 +114,8 @@
         </el-dialog>
 
         <el-dialog title="博客内容" v-model="data.viewVisible" width="60%" destroy-on-close>
-            <div v-html="data.content" style="padding: 0 20px"></div>
+            <!-- 修改此处，添加样式 -->
+            <div v-html="data.content" style="padding: 0 20px; white-space: normal;"></div>
         </el-dialog>
     </div>
 </template>
@@ -132,7 +133,7 @@ const data = reactive({
     title: null,
     pageNum: 1,
     pageSize: 5,
-    totle: 0,
+    total: 0, // 修正拼写错误
     tableData: [],
     form: {},
     formVisible: false,
@@ -150,11 +151,10 @@ const data = reactive({
     categoryData: [],
 })
 
-/*wangEditor初始化开始*/
 const editorRef = shallowRef()
 const mode = 'default'
 const editorConfig = {MENU_CONF: {}}
-//图片上传配置
+
 editorConfig.MENU_CONF['uploadImage'] = {
     headers: {
         token: data.user.token
@@ -162,18 +162,17 @@ editorConfig.MENU_CONF['uploadImage'] = {
     server: 'http://localhost:9999/files/wang/upload',
     fileName: 'file',
 }
-//组件销毁时，销毁编辑器实例
+
 onBeforeUnmount(() => {
     const editor = editorRef.value
     if (editor) {
         editor.destroy()
     }
 })
-//记录editor实例！
+
 const handleCreated = (editor) => {
     editorRef.value = editor
 }
-/*wangeditor初始化结束*/
 
 const formRef = ref()
 
@@ -284,5 +283,30 @@ handleCategory()
 </script>
 
 <style>
+/* 可以添加更多样式来美化博客详情显示 */
+.el-dialog__content div[v-html] {
+    line-height: 1.6;
+    font-size: 14px;
+    color: #333;
+}
 
+.el-dialog__content div[v-html] p {
+    margin-bottom: 10px;
+}
+
+.el-dialog__content div[v-html] h1,
+.el-dialog__content div[v-html] h2,
+.el-dialog__content div[v-html] h3,
+.el-dialog__content div[v-html] h4,
+.el-dialog__content div[v-html] h5,
+.el-dialog__content div[v-html] h6 {
+    margin-bottom: 10px;
+    color: #222;
+}
+
+.el-dialog__content div[v-html] img {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+}
 </style>

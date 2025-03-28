@@ -64,6 +64,12 @@ public class UserController {
         return Result.success();
     }
 
+    @GetMapping("/selectById/{id}")
+    public Result selectById(@PathVariable Integer id){
+        User user = userService.selectById(id.toString());
+        return Result.success(user);
+    }
+
     //数据导出
     @GetMapping("/export")
     public void exportData(User user, HttpServletResponse response) throws Exception{

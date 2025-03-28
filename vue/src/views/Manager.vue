@@ -15,13 +15,16 @@
             <div style="flex: 1; border-bottom: 1px solid #ddd"></div>
             <div style="width: fit-content; display: flex; align-items: center; padding-right: 20px; border-bottom: 1px solid #ddd">
                 <el-switch
-                    v-model="value1"
-                    :active-action-icon="Sunset"
-                    :inactive-action-icon="Sunrise"
-                    @change="toggleDark"
-                    style="margin-right: 10px"
+                        v-model="value1"
+                        :active-action-icon="Sunset"
+                        :inactive-action-icon="Sunrise"
+                        @change="toggleDark"
+                        style="margin-right: 10px"
                 />
-                <el-icon style="margin-right: 10px; font-size: 30px; color: #3efa2d"><ChromeFilled /></el-icon>
+                <a href="https://github.com/Code-2025/vue" target="_blank">
+                    <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+                         style="width: 40px; height: 40px; margin-right: 10px">
+                </a>
                 <el-dropdown>
                     <div style="display: flex; align-items: center">
                         <img v-if="data.user?.avatar" style="width: 40px; height: 40px; border-radius: 50%"
@@ -33,7 +36,8 @@
                     <template #dropdown>
                         <el-dropdown-menu>
                             <el-dropdown-item @click="router.push('/manager/person')">个人信息</el-dropdown-item>
-                            <el-dropdown-item @click="router.push('/manager/updatePassword')">修改密码</el-dropdown-item>
+                            <el-dropdown-item @click="router.push('/manager/updatePassword')">修改密码
+                            </el-dropdown-item>
                             <el-dropdown-item @click="loginOutToFront">返回前台</el-dropdown-item>
                             <el-dropdown-item @click="loginOut">退出登录</el-dropdown-item>
                         </el-dropdown-menu>
@@ -50,7 +54,7 @@
             <div class="sidebar" style="width: 240px; box-shadow: 0 0 8px rgba(0, 0, 0, .12)">
                 <el-menu router :default-openeds="['1']" :default-active="router.currentRoute.value.path"
                          style="min-height: calc(100vh - 60px)">
-                    <el-menu-item index="/manager/home" >
+                    <el-menu-item index="/manager/home">
                         <el-icon>
                             <House/>
                         </el-icon>
@@ -77,7 +81,9 @@
                     </el-sub-menu>
                     <el-sub-menu index="3">
                         <template #title>
-                            <el-icon><Star /></el-icon>
+                            <el-icon>
+                                <Star/>
+                            </el-icon>
                             <span>活动管理</span>
                         </template>
                         <el-menu-item index="/manager/activity">活动信息</el-menu-item>
@@ -114,13 +120,13 @@
 <script setup>
 import {reactive} from "vue";
 import router from "@/router/index.js";
-import {Sunrise, Sunset, ArrowRight } from '@element-plus/icons-vue'
+import {Sunrise, Sunset, ArrowRight} from '@element-plus/icons-vue'
 import {useDark, useToggle} from '@vueuse/core'
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)
 
-const value1 = reactive({ value: true })
+const value1 = reactive({value: true})
 
 const data = reactive({
     user: JSON.parse(localStorage.getItem('code_user') || '{}')
@@ -292,5 +298,16 @@ body {
 .dark-mode .el-menu-item span,
 .dark-mode .el-sub-menu__title span {
     color: #ccc;
+}
+
+/* 淡入淡出动画 */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
 }
 </style>

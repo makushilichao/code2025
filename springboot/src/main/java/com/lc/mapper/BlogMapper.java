@@ -17,4 +17,6 @@ public interface BlogMapper {
 
     @Delete("delete from `blog` where id = #{id}")
     void deleteById(Integer id);
+
+    Blog selectById(Integer id);
 }
