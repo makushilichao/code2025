@@ -1,38 +1,32 @@
 <template>
     <div>
         <div class="card" style="margin-bottom: 5px">
-            <el-input clearable @clear="load" style="width: 260px; margin-right: 5px" v-model="data.title"
+            <el-input clearable @clear="load" style="width: 260px; margin-right: 5px" v-model="data.blogTitle"
                       placeholder="请输入标题查询"
                       :prefix-icon="Search" @keydown.enter="handleEnter"></el-input>
             <el-button type="primary" @click="load">查 询</el-button>
             <el-button type="" @click="reset">重 置</el-button>
         </div>
 
-        <div class="card" style="margin-bottom: 5px" >
-            <el-button type="primary" @click="handleAdd">新 建</el-button>
-        </div>
-
         <div class="card" style="margin-bottom: 5px">
             <el-table :data="data.tableData" stripe style="width: 100%"
                       :header-cell-style="{color:'#333', backgroundColor:'#ddd'}"
             >
-                <el-table-column label="封面" width="100">
+                <el-table-column  label="头像" width="100">
                     <template #default="scope">
-                        <el-image v-if="scope.row.img" :src="scope.row.img"
-                                  style="width: 40px; height: 40px; border-radius: 5px; display: block"
-                                  :preview-src-list="[scope.row.img]" :preview-teleported="true">
-                            >
-                        </el-image>
+                        <el-image v-if="scope.row.avatar" :src="scope.row.avatar"
+                                  style="width: 40px; height: 40px; border-radius: 50%; display: block"
+                                  :preview-src-list="[scope.row.avatar]"  :preview-teleported="true">
+                            ></el-image>
                     </template>
                 </el-table-column>
-                <el-table-column prop="title" label="博客标题"/>
-                <el-table-column prop="categoryTitle" label="博客类别"/>
-                <el-table-column prop="content" label="博客内容">
+                <el-table-column prop="userName" label="评论用户"/>
+                <el-table-column prop="blogTitle" label="博客标题"/>
+                <el-table-column prop="content" label="评论内容">
                     <template v-slot="scope">
                         <el-button type="text" @click="viewContent(scope.row.content)">点击详情</el-button>
                     </template>
                 </el-table-column>
-                <el-table-column prop="userName" label="发布用户"/>
                 <el-table-column prop="createTime" label="发布时间"/>
                 <el-table-column width="100" label="编辑" v-if="data.user.role === 'ADMIN'">
                     <template #default="scope">
@@ -55,66 +49,8 @@
             />
         </div>
 
-        <el-dialog title="博客信息" v-model="data.formVisible" width="60%" destroy-on-close="true">
-            <el-form ref="formRef" :model="data.form">
-                <el-form-item labal="博客封面" prop="img">
-                    <el-upload
-                        action="http://localhost:9999/files/upload"
-                        :show-file-list="false"
-                        :headers="{token: data.user.token}"
-                        :on-success="handleFileSuccess"
-                        list-type="picture"
-                    >
-                        <el-button type="primary">上传封面</el-button>
-                    </el-upload>
-                </el-form-item>
-                <el-form-item label="博客标题" prop="title">
-                    <el-input v-model="data.form.title" autocomplete="off" placeholder="请输入博客标题"
-                              @keydown.enter="handleEnter($event)"
-                    />
-                </el-form-item>
-                <el-form-item label="博客分类" prop="categoryId">
-                    <el-select
-                        v-model="data.form.categoryId"
-                        placeholder="请选择博客类别"
-                        style="width: 100%"
-                    >
-                        <el-option
-                            v-for="item in data.categoryData"
-                            :key="item.id"
-                            :label="item.title"
-                            :value="item.id"
-                        />
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="博客内容" prop="content">
-                    <div style="border: 1px solid #ccc; width: 100%">
-                        <Toolbar
-                            style="border-bottom: 1px solid #ccc;"
-                            :mode="mode"
-                            :editor="editorRef"
-                        />
-                        <Editor
-                            style="height: 200px"
-                            overflow-y="hidden;"
-                            v-model="data.form.content"
-                            :mode="mode"
-                            :defaultConfig="editorConfig"
-                            @onCreated="handleCreated"
-                        />
-                    </div>
-                </el-form-item>
-            </el-form>
-            <template #footer>
-                <div class="dialog-footer">
-                    <el-button @click="data.formVisible = false">取 消</el-button>
-                    <el-button type="primary" @click="save">提 交</el-button>
-                </div>
-            </template>
-        </el-dialog>
+        <el-dialog title="评论内容" v-model="data.viewVisible" width="40%" destroy-on-close>
 
-        <el-dialog title="博客内容" v-model="data.viewVisible" width="60%" destroy-on-close>
-            <!-- 修改此处，添加样式 -->
             <div v-html="data.content" style="padding: 0 20px; white-space: normal;"></div>
         </el-dialog>
     </div>
@@ -125,12 +61,11 @@ import {Search} from "@element-plus/icons-vue";
 import {reactive, ref, shallowRef, onBeforeUnmount} from "vue";
 import request from "../../utils/request.js";
 import {ElMessage, ElMessageBox} from "element-plus";
-import {Editor, Toolbar} from '@wangeditor/editor-for-vue';
 import '@wangeditor/editor/dist/css/style.css';
 
 const data = reactive({
     user: JSON.parse(localStorage.getItem('code_user') || '{}'),
-    title: null,
+    blogTitle: null,
     pageNum: 1,
     pageSize: 5,
     total: 0,
@@ -138,12 +73,12 @@ const data = reactive({
     form: {},
     formVisible: false,
     rules: {
-        title: [
-            {required: true, message: '请输入博客标题', trigger: 'blur'},
+        blogTitle: [
+            {required: true, message: '请输入评论标题', trigger: 'blur'},
             {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
         ],
         content: [
-            {required: true, message: '请输入博客内容', trigger: 'blur'},
+            {required: true, message: '请输入评论内容', trigger: 'blur'},
         ]
     },
     content: null,
@@ -177,11 +112,12 @@ const handleCreated = (editor) => {
 const formRef = ref()
 
 const load = () => {
-    request.get('/blog/selectPage', {
+    request.get('/comment/selectPage', {
         params: {
             pageNum: data.pageNum,
             pageSize: data.pageSize,
-            title: data.title
+            blogTitle: data.blogTitle,
+            avatar: data.avatar
         }
     }).then(res => {
         if (res.code === '200') {
@@ -196,7 +132,7 @@ const load = () => {
 load()
 
 const reset = () => {
-    data.title = null
+    data.blogTitle = null
     load()
 }
 
@@ -208,7 +144,7 @@ const handleAdd = () => {
 const add = () => {
     formRef.value.validate((valid) => {
         if (valid) {
-            request.post('/blog/add', data.form).then(res => {
+            request.post('/comment/add', data.form).then(res => {
                 if (res.code === '200') {
                     data.formVisible = false
                     ElMessage.success("添加成功！")
@@ -222,7 +158,7 @@ const add = () => {
 }
 
 const update = () => {
-    request.put('/blog/update', data.form).then(res => {
+    request.put('/comment/update', data.form).then(res => {
         if (res.code === '200') {
             ElMessage.success("更新成功！")
             data.formVisible = false
@@ -244,7 +180,7 @@ const handleEdit = (row) => {
 
 const deleteRow = (id) => {
     ElMessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {type: 'warning'}).then(res => {
-        request.delete('/blog/delete/' + id).then(res => {
+        request.delete('/comment/delete/' + id).then(res => {
             if (res.code === '200') {
                 ElMessage.success("删除成功！")
                 load()
@@ -283,6 +219,7 @@ handleCategory()
 </script>
 
 <style>
+/* 可以添加更多样式来美化评论详情显示 */
 .el-dialog__content div[v-html] {
     line-height: 1.6;
     font-size: 14px;

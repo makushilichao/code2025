@@ -2,18 +2,18 @@
     <div id="app">
         <header class="header">
             <div class="logo">IT论坛系统</div>
-            <nav class="nav">
+            <nav class="nav" >
                 <ul>
                     <li style="padding-right: 10px"><a href="/front">首页</a></li>
                     <li style="padding-right: 10px"><a href="#">热门文章</a></li>
-                    <li style="padding-right: 10px"><a href="#">最新文章</a></li>
+                    <li style="padding-right: 10px"><a href="#">最新活动</a></li>
                     <li style="padding-right: 10px"><a href="#">分类</a></li>
                 </ul>
             </nav>
             <div style="width: fit-content; display: flex; align-items: center; padding-right: 20px">
                 <div class="search" style="padding: 5px; margin-right: 10px">
-                    <input type="text" placeholder="搜索文章">
-                    <button>搜索</button>
+                    <input v-model="data.title" type="text" clearable @clear="blogs" @keydown.enter="handleEnter" placeholder="搜索文章">
+                    <button @click="blogs">搜索</button>
                 </div>
                 <el-dropdown style="cursor: pointer;">
                     <div style="display: flex; align-items: center">
@@ -53,7 +53,6 @@
             </el-divider>
         </div>
 
-        <!-- 新增父容器 -->
         <div class="article-and-sidebar">
             <div class="article-list">
                 <article v-for="blog in data.blogData" :key="blog.id" class="article-item">
@@ -61,21 +60,19 @@
                         <h3><a @click="navTo('/front/author?id=' + blog.userId)" style="cursor: pointer">{{ blog.userName }}</a></h3>
                         <h2><a @click="navTo('/front/content?id=' + blog.id)" style="cursor: pointer">{{ blog.title }}</a></h2>
                         <p class="meta">
-                            <span>{{ truncateContent(removeHtmlTags(blog.content)) }}</span>
+                            <span style="cursor: pointer" @click="navTo('/front/content?id=' + blog.id)">{{ truncateContent(removeHtmlTags(blog.content)) }}</span>
                         </p>
-                        <p class="summary">{{ blog.summary }}</p>
                     </div>
                     <img class="article-image" :src="blog.img" alt="文章图片">
                 </article>
             </div>
 
-            <!-- 侧边栏 -->
             <aside class="sidebar">
                 <div class="widget">
-                    <h3>热门文章</h3>
+                    <h3 style="color: #ff5c38; font-size: 25px">热门文章</h3>
                     <ul>
-                        <li v-for="(blog, index) in hotArticles" :key="index">
-                            <a href="#">{{ blog.title }}</a>
+                        <li v-for="blog in data.blogData" :key="blog.id">
+                            <a :href="`http://localhost:5173/front/content?id=${blog.id}`">{{ blog.title }}</a>
                         </li>
                     </ul>
                 </div>
@@ -91,7 +88,6 @@
             </aside>
         </div>
 
-        <!-- 底部 -->
         <footer class="footer">
             <p>版权所有 &copy; 2025 IT论坛系统</p>
         </footer>
@@ -110,6 +106,7 @@ const data = reactive({
     user: JSON.parse(localStorage.getItem('code_user') || '{}'),
     carouselData: [],
     blogData: [],
+    title: null,
 })
 
 const getCarousel = async () => {
@@ -130,19 +127,25 @@ onMounted(async () => {
 });
 
 const blogs = () => {
-    request.get('/blog/selectAll').then(res => {
+    request.get('/blog/selectAll', {
+        params: {
+            title: data.title
+        }
+    }).then(res => {
         console.log(res)
         if (res.code === '200') {
-            data.blogData = res.data;
+            data.blogData = res.data
         } else {
-            ElMessage.error(res.msg);
+            ElMessage.error(res.msg)
         }
-    }).catch(error => {
-        ElMessage.error('获取文章数据失败');
     })
 }
 
 blogs()
+
+const handleEnter = () => {
+    blogs()
+}
 
 const navTo = (url) => {
     location.href = url
@@ -157,17 +160,6 @@ const loginOut = () => {
     location.href = '/login'
 }
 
-// 模拟热门文章数据
-const hotArticles = ref([
-    {
-        title: '热门文章标题1'
-    },
-    {
-        title: '热门文章标题2'
-    }
-]);
-
-// 截断文章内容
 const truncateContent = (content) => {
     const maxLength = 100;
     if (content.length > maxLength) {
@@ -176,7 +168,6 @@ const truncateContent = (content) => {
     return content;
 }
 
-// 去除 HTML 标签
 const removeHtmlTags = (html) => {
     return html.replace(/<[^>]*>/g, '');
 }
@@ -229,6 +220,11 @@ body {
     text-decoration: none;
 }
 
+.nav ul li a:hover {
+    color: #007bff;
+    text-decoration: underline;
+}
+
 .search input {
     padding: 5px;
     border: none;
@@ -242,6 +238,11 @@ body {
     border: none;
     border-radius: 3px;
     margin-left: 5px;
+}
+
+.search button:hover {
+    background-color: #007bff;
+    transform: scale(1.05);
 }
 
 .slider {

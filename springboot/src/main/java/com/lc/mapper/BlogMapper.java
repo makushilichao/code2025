@@ -19,4 +19,6 @@ public interface BlogMapper {
     void deleteById(Integer id);
 
     Blog selectById(Integer id);
+
+    Blog selectByTitle(String title);
 }

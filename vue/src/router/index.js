@@ -30,6 +30,7 @@ const router = createRouter({
                     meta: {name: '活动分类'},
                     component: () => import('../views/ActivityCategory.vue')
                 },
+                {path: 'behindComment', meta: {name: '评论信息'}, component: () => import('../views/BehindComment.vue')},
             ],
         },
         {path: '/login', component: () => import('../views/Login.vue')},

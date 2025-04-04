@@ -18,4 +18,6 @@ public class Account {
     private String occupation;
     private String address;
     private String adminId;
+    private String blogTitle;
+    private Integer blogId;
 }

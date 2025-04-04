@@ -59,7 +59,7 @@
                             <House/>
                         </el-icon>
                         <span>首 页</span></el-menu-item>
-                    <el-sub-menu index="1" v-if="data.user.role === 'ADMIN'">
+                    <el-sub-menu index="1"><!--v-if="data.user.role === 'ADMIN'"-->
                         <template #title>
                             <el-icon>
                                 <User/>
@@ -99,6 +99,7 @@
                         <el-menu-item index="/manager/notice" v-if="data.user.role === 'ADMIN'">系统公告</el-menu-item>
                         <el-menu-item index="/manager/notice" v-else>公告信息</el-menu-item>
                         <el-menu-item index="/manager/carousel">轮播图设置</el-menu-item>
+                        <el-menu-item index="/manager/behindComment">评论设置</el-menu-item>
                     </el-sub-menu>
                 </el-menu>
             </div>
@@ -224,7 +225,7 @@ const updateUser = () => {
 }
 
 .sidebar::-webkit-scrollbar-thumb:hover {
-    background-color: #555; /* 滚动条滑块悬停时的颜色 */
+    background-color: #555;
 }
 
 /* 光模式样式 */

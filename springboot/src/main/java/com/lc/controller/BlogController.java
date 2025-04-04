@@ -53,4 +53,10 @@ public class BlogController {
         Blog blog = blogService.selectById(id);
         return Result.success(blog);
     }
+
+    @GetMapping("/selectByTitle")
+    public Result selectByTitle(@RequestParam Blog blog) {
+        PageInfo<Blog> blogPageInfo = blogService.selectByTitle(blog);
+        return Result.success(blogPageInfo);
+    }
 }

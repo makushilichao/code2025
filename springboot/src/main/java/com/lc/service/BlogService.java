@@ -62,7 +62,6 @@ public class BlogService {
             if(ObjectUtil.isNotEmpty(category)){
                 dbBlog.setCategoryTitle(category.getTitle());
             }
-
         }
         return PageInfo.of(list);
     }
@@ -80,5 +79,10 @@ public class BlogService {
             blog.setUserName(user.getName());
         }
         return blog;
+    }
+
+    public PageInfo<Blog> selectByTitle(Blog blog) {
+        List<Blog> list = blogMapper.selectAll(blog);
+        return PageInfo.of(list);
     }
 }

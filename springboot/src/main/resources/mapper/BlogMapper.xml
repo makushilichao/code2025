@@ -27,4 +27,11 @@
     <select id="selectById" resultType="com.lc.entity.Blog">
         select * from `blog` where id = #{id}
     </select>
+
+    <select id="selectByTitle" resultType="com.lc.entity.Blog">
+        select * from `blog`
+        <where>
+            <if test="title != null and title != ''">title like concat('%',#{title},'%')</if>
+        </where>
+    </select>
 </mapper>
