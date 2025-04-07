@@ -15,12 +15,12 @@
     </select>
 
     <insert id="insert">
-        insert into `activity` (title, content, create_time, img, admin_id)
-        values (#{title}, #{content}, #{createTime}, #{img}, #{adminId})
+        insert into `activity` (title, content, create_time, img, admin_id, category2_id)
+        values (#{title}, #{content}, #{createTime}, #{img}, #{adminId}, #{category2Id})
     </insert>
     
     <update id="updateById">
-        update `activity` set title = #{title}, content = #{content}, create_time = #{createTime}, img = #{img}, admin_id = #{adminId}
+        update `activity` set title = #{title}, content = #{content}, create_time = #{createTime}, img = #{img}, admin_id = #{adminId}, category2_id = #{category2Id}
         where id = #{id}
     </update>
     

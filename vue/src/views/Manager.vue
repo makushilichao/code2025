@@ -76,8 +76,8 @@
                             </el-icon>
                             <span>信息管理</span>
                         </template>
-                        <el-menu-item index="/manager/blog">博客信息</el-menu-item>
-                        <el-menu-item index="/manager/blogCategory">博客分类</el-menu-item>
+                        <el-menu-item index="/manager/blog">文章信息</el-menu-item>
+                        <el-menu-item index="/manager/blogCategory">文章分类</el-menu-item>
                     </el-sub-menu>
                     <el-sub-menu index="3">
                         <template #title>

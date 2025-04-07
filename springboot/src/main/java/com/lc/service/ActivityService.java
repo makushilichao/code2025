@@ -6,10 +6,10 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lc.entity.Account;
 import com.lc.entity.Activity;
-import com.lc.entity.Category;
+import com.lc.entity.Category2;
 import com.lc.entity.User;
 import com.lc.mapper.ActivityMapper;
-import com.lc.mapper.CategoryMapper;
+import com.lc.mapper.Category2Mapper;
 import com.lc.mapper.UserMapper;
 import com.lc.utils.TokenUtils;
 import jakarta.annotation.Resource;
@@ -25,7 +25,7 @@ public class ActivityService {
     @Resource
     ActivityMapper activityMapper;
     @Resource
-    CategoryMapper categoryMapper;
+    Category2Mapper category2Mapper;
     @Resource
     UserMapper userMapper;
 
@@ -57,10 +57,10 @@ public class ActivityService {
         PageHelper.startPage(pageNum, pageSize);
         List<Activity> list = activityMapper.selectAll(activity);
         for (Activity dbActivity : list) {
-            Integer categoryId = dbActivity.getCategoryId();
-            Category category = categoryMapper.selectById(categoryId);
-            if(ObjectUtil.isNotEmpty(category)){
-                dbActivity.setCategoryTitle(category.getTitle());
+            Integer category2Id = dbActivity.getCategory2Id();
+            Category2 category2 = category2Mapper.selectById(category2Id);
+            if(ObjectUtil.isNotEmpty(category2)){
+                dbActivity.setCategory2Title(category2.getTitle());
             }
 
         }
@@ -69,12 +69,12 @@ public class ActivityService {
 
     public Activity selectById(Integer id) {
         Activity activity = activityMapper.selectById(id);
-        Integer categoryId = activity.getCategoryId();
+        Integer category2Id = activity.getCategory2Id();
         Integer userId = activity.getAdminId();
-        Category category = categoryMapper.selectById(categoryId);
+        Category2 category2 = category2Mapper.selectById(category2Id);
         User user = userMapper.selectById(userId.toString());
-        if(ObjectUtil.isNotEmpty(category)){
-            activity.setCategoryTitle(category.getTitle());
+        if(ObjectUtil.isNotEmpty(category2)){
+            activity.setCategory2Title(category2.getTitle());
         }
         if(ObjectUtil.isNotEmpty(user)){
             activity.setAdminName(user.getName());

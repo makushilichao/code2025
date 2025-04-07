@@ -80,7 +80,7 @@ const data = reactive({
     title: null,
     pageNum: 1,
     pageSize: 5,
-    totle: 0,
+    total: 0,
     tableData: [],
     form: {},
     formVisible: false,

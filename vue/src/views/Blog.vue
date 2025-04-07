@@ -25,9 +25,9 @@
                         </el-image>
                     </template>
                 </el-table-column>
-                <el-table-column prop="title" label="博客标题"/>
-                <el-table-column prop="categoryTitle" label="博客类别"/>
-                <el-table-column prop="content" label="博客内容">
+                <el-table-column prop="title" label="文章标题"/>
+                <el-table-column prop="categoryTitle" label="文章类别"/>
+                <el-table-column prop="content" label="文章内容">
                     <template v-slot="scope">
                         <el-button type="text" @click="viewContent(scope.row.content)">点击详情</el-button>
                     </template>
@@ -55,9 +55,9 @@
             />
         </div>
 
-        <el-dialog title="博客信息" v-model="data.formVisible" width="60%" destroy-on-close="true">
+        <el-dialog title="文章信息" v-model="data.formVisible" width="60%" destroy-on-close="true">
             <el-form ref="formRef" :model="data.form">
-                <el-form-item labal="博客封面" prop="img">
+                <el-form-item labal="文章封面" prop="img">
                     <el-upload
                         action="http://localhost:9999/files/upload"
                         :show-file-list="false"
@@ -68,15 +68,15 @@
                         <el-button type="primary">上传封面</el-button>
                     </el-upload>
                 </el-form-item>
-                <el-form-item label="博客标题" prop="title">
-                    <el-input v-model="data.form.title" autocomplete="off" placeholder="请输入博客标题"
+                <el-form-item label="文章标题" prop="title">
+                    <el-input v-model="data.form.title" autocomplete="off" placeholder="请输入文章标题"
                               @keydown.enter="handleEnter($event)"
                     />
                 </el-form-item>
-                <el-form-item label="博客分类" prop="categoryId">
+                <el-form-item label="文章分类" prop="categoryId">
                     <el-select
                         v-model="data.form.categoryId"
-                        placeholder="请选择博客类别"
+                        placeholder="请选择文章类别"
                         style="width: 100%"
                     >
                         <el-option
@@ -87,7 +87,7 @@
                         />
                     </el-select>
                 </el-form-item>
-                <el-form-item label="博客内容" prop="content">
+                <el-form-item label="文章内容" prop="content">
                     <div style="border: 1px solid #ccc; width: 100%">
                         <Toolbar
                             style="border-bottom: 1px solid #ccc;"
@@ -113,7 +113,7 @@
             </template>
         </el-dialog>
 
-        <el-dialog title="博客内容" v-model="data.viewVisible" width="60%" destroy-on-close>
+        <el-dialog title="文章内容" v-model="data.viewVisible" width="60%" destroy-on-close>
             <!-- 修改此处，添加样式 -->
             <div v-html="data.content" style="padding: 0 20px; white-space: normal;"></div>
         </el-dialog>
@@ -139,11 +139,11 @@ const data = reactive({
     formVisible: false,
     rules: {
         title: [
-            {required: true, message: '请输入博客标题', trigger: 'blur'},
+            {required: true, message: '请输入文章标题', trigger: 'blur'},
             {min: 1, max: 20, message: '长度在 1 到 20 个字符', trigger: 'blur'}
         ],
         content: [
-            {required: true, message: '请输入博客内容', trigger: 'blur'},
+            {required: true, message: '请输入文章内容', trigger: 'blur'},
         ]
     },
     content: null,

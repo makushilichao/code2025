@@ -21,8 +21,8 @@ const router = createRouter({
                     component: () => import('../views/UpdatePassword.vue')
                 },
                 {path: 'notice', meta: {name: '系统公告'}, component: () => import('../views/Notice.vue')},
-                {path: 'blog', meta: {name: '博客信息'}, component: () => import('../views/Blog.vue')},
-                {path: 'blogCategory', meta: {name: '博客分类'}, component: () => import('../views/BlogCategory.vue')},
+                {path: 'blog', meta: {name: '文章信息'}, component: () => import('../views/Blog.vue')},
+                {path: 'blogCategory', meta: {name: '文章分类'}, component: () => import('../views/BlogCategory.vue')},
                 {path: 'carousel', meta: {name: '轮播图设置'}, component: () => import('../views/Carousel.vue')},
                 {path: 'activity', meta: {name: '活动信息'}, component: () => import('../views/Activity.vue')},
                 {

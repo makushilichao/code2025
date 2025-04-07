@@ -9,8 +9,8 @@ public class Activity {
     private String title;
     private String content;
     private String createTime;
-    private Integer categoryId;
-    private String categoryTitle;
+    private Integer category2Id;
+    private String category2Title;
     private Integer adminId;
     private String adminName;
 }

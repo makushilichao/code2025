@@ -38,7 +38,7 @@
             />
         </div>
 
-        <el-dialog title="博客信息" v-model="data.formVisible" width="35%" destroy-on-close="true">
+        <el-dialog title="新建文章信息" v-model="data.formVisible" width="35%" destroy-on-close="true">
             <el-form ref="formRef" :model="data.form" :rules="data.rules">
                 <el-form-item label="分类标题" prop="title">
                     <el-input v-model="data.form.title" autocomplete="off" placeholder="请输入分类标题"
@@ -66,7 +66,7 @@ const data = reactive({
     title: null,
     pageNum: 1,
     pageSize: 5,
-    totle: 0,
+    total: 0,
     tableData: [],
     form: {},
     formVisible: false,

@@ -26,7 +26,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="title" label="活动标题"/>
-                <el-table-column prop="categoryTitle" label="活动类别"/>
+                <el-table-column prop="category2Title" label="活动类别"/>
                 <el-table-column prop="content" label="活动内容">
                     <template v-slot="scope">
                         <el-button type="text" @click="viewContent(scope.row.content)">点击详情</el-button>
@@ -73,14 +73,14 @@
                               @keydown.enter="handleEnter($event)"
                     />
                 </el-form-item>
-                <el-form-item label="活动分类" prop="categoryId">
+                <el-form-item label="活动分类" prop="category2Id">
                     <el-select
-                            v-model="data.form.categoryId"
+                            v-model="data.form.category2Id"
                             placeholder="请选择活动类别"
                             style="width: 100%"
                     >
                         <el-option
-                                v-for="item in data.categoryData"
+                                v-for="item in data.category2Data"
                                 :key="item.id"
                                 :label="item.title"
                                 :value="item.id"
@@ -148,7 +148,7 @@ const data = reactive({
     },
     content: null,
     viewVisible: false,
-    categoryData: [],
+    category2Data: [],
 })
 
 const editorRef = shallowRef()
@@ -271,9 +271,9 @@ const viewContent = (content) => {
 }
 
 const handleCategory = () => {
-    request.get('/category/selectAll').then(res => {
+    request.get('/category2/selectAll').then(res => {
         if (res.code === '200') {
-            data.categoryData = res.data
+            data.category2Data = res.data
         } else {
             ElMessage.error(res.msg)
         }
