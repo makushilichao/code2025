@@ -15,10 +15,10 @@
             <el-button type="danger" @click="deleteBatch">批量删除</el-button>
             <el-button type="warning" @click="exportData">批量导出</el-button>
             <el-upload
-                    style="display: inline-block; margin-left: 10px"
-                    action="http://localhost:9999/admin/import"
-                    :show-file-list="false"
-                    :on-success="handleImportSuccess"
+                style="display: inline-block; margin-left: 10px"
+                action="http://localhost:9999/admin/import"
+                :show-file-list="false"
+                :on-success="handleImportSuccess"
             >
                 <el-button type="success">批量导入</el-button>
             </el-upload>
@@ -34,13 +34,18 @@
                         <el-image v-if="scope.row.avatar" :src="scope.row.avatar"
                                   style="width: 40px; height: 40px; border-radius: 50%; display: block"
                                   :preview-src-list="[scope.row.avatar]"  :preview-teleported="true">
-                            ></el-image>
+                        </el-image>
                     </template>
                 </el-table-column>
                 <el-table-column prop="username" label="账号"/>
                 <el-table-column prop="name" label="名称"/>
                 <el-table-column prop="phone" label="电话"/>
                 <el-table-column prop="email" label="邮箱"/>
+                <el-table-column label="性别" prop="sex">
+                    <template #default="scope">
+                        <span>{{ scope.row.sex === 1 ? '男' : scope.row.sex === 2 ? '女' : '未知' }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column width="100" label="编辑">
                     <template #default="scope">
                         <el-button type="primary" icon="Edit" circle @click="handleEdit(scope.row)"></el-button>
@@ -52,13 +57,13 @@
 
         <div class="card" style="margin-bottom: 5px">
             <el-pagination
-                    v-model:current-page="data.pageNum"
-                    v-model:page-size="data.pageSize"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :page-sizes="[5, 10, 20, 30]"
-                    :total="data.total"
-                    @current-change="load"
-                    @size-change="load"
+                v-model:current-page="data.pageNum"
+                v-model:page-size="data.pageSize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :page-sizes="[5, 10, 20, 30]"
+                :total="data.total"
+                @current-change="load"
+                @size-change="load"
             />
         </div>
 
@@ -80,7 +85,13 @@
                     <el-input v-model="data.form.email" autocomplete="off" placeholder="请输入邮箱"
                               @keydown.enter="handleEnter"/>
                 </el-form-item>
-                <el-form-item labal="头像" prop="avatar">
+                <el-form-item label="性别" prop="sex">
+                    <el-radio-group v-model="data.form.sex">
+                        <el-radio value="1">男</el-radio>
+                        <el-radio value="2">女</el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="头像" prop="avatar">
                     <el-upload
                         action="http://localhost:9999/files/upload"
                         :show-file-list="false"
@@ -130,6 +141,9 @@ const data = reactive({
         ],
         email: [
             {required: true, message: '请输入邮箱', trigger: 'blur'}
+        ],
+        sex: [
+            {required: true, message: '请选择性别', trigger: 'change'}
         ]
     },
     rows: [],
@@ -234,7 +248,7 @@ const deleteBatch = () => {
         return
     }
     ElMessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {type: 'warning'}).then(res => {
-        request.delete('/admin/deleteBatch', {data: data.rows}).then(res => {
+        request.delete('/admin/deleteBatch', {params: {ids: data.ids}}).then(res => {
             if (res.code === '200') {
                 ElMessage.success("批量删除成功！")
                 load()
@@ -257,7 +271,7 @@ const exportData = () => {
 }
 
 const handleImportSuccess = (res) => {
-    if (res === '200') {
+    if (res.code === '200') {
         ElMessage.success("批量导入成功！")
         load()
     } else {

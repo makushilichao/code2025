@@ -20,4 +20,5 @@ public class Account {
     private String adminId;
     private String blogTitle;
     private Integer blogId;
+    private Integer sex;
 }

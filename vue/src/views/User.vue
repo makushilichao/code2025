@@ -41,6 +41,11 @@
                 <el-table-column prop="name" label="名称"/>
                 <el-table-column prop="phone" label="电话"/>
                 <el-table-column prop="email" label="邮箱"/>
+                <el-table-column label="性别" prop="sex">
+                    <template #default="scope">
+                        <span>{{ scope.row.sex === 1 ? '男' : scope.row.sex === 2 ? '女' : '未知' }}</span>
+                    </template>
+                </el-table-column>
                 <el-table-column width="100" label="编辑">
                     <template #default="scope">
                         <el-button type="primary" icon="Edit" circle @click="handleEdit(scope.row)"></el-button>
@@ -78,6 +83,12 @@
                 <el-form-item label="邮箱" prop="email">
                     <el-input v-model="data.form.email" autocomplete="off" placeholder="请输入邮箱"
                               @keydown.enter="handleEnter"/>
+                </el-form-item>
+                <el-form-item label="性别" prop="sex">
+                    <el-radio-group v-model="data.form.sex">
+                        <el-radio value="1">男</el-radio>
+                        <el-radio value="2">女</el-radio>
+                    </el-radio-group>
                 </el-form-item>
                 <el-form-item labal="头像" prop="avatar">
                     <el-upload

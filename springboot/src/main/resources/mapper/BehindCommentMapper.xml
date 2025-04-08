@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lc.mapper.BehindCommentMapper">
+
+    <select id="selectAll" resultType="com.lc.entity.Comment">
+        select comment.*, user.name as userName, user.avatar as avatar from `comment`
+        left join user on comment.user_id = user.id
+        left join blog on comment.blog_id = blog.id
+        <where>
+            <if test="userId != null">
+                user_id = #{userId}
+            </if>
+        </where>
+        order by id desc
+    </select>
+
+    <insert id="insert">
+        insert into `comment` (content, create_time, blog_id, user_id, avatar, user_name, parent_comment_id, is_reply, reply_count)
+        values (#{content}, #{createTime}, #{blogId}, #{userId}, #{avatar}, #{userName}, #{parentCommentId}, #{isReply}, #{replyCount})
+    </insert>
+
+    <update id="updateById">
+        update `comment`
+        set content = #{content}, create_time = #{createTime},  blog_id = #{blogId}, user_id = #{userId}, avatar = #{avatar}
+        where id = #{id}
+    </update>
+
+    <select id="selectByBlogId" resultType="com.lc.entity.Comment">
+        select * from `comment` where blog_id = #{blogId}
+    </select>
+</mapper>

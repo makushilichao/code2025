@@ -6,7 +6,7 @@
                     <img v-if="data.user?.avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"
                          :src="data.user?.avatar">
                     <img v-else style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;"
-                         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt="">
+                         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55b3png.png" alt="">
                     <span class="text-large font-600 mr-3" style="margin: -2px 10px"> {{data.user?.username}} </span>
                     <el-tag type="success">安全</el-tag>
                 </div>
@@ -28,7 +28,7 @@
                 <img v-if="data.user?.avatar" style="width: 100px; height: 100px; object-fit: cover;"
                      :src="data.user?.avatar">
                 <img v-else style="width: 40px; height: 40px; object-fit: cover;"
-                     src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" alt="">
+                     src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55b3png.png" alt="">
             </el-descriptions-item>
             <el-descriptions-item label="用户名">{{data.user?.name}}</el-descriptions-item>
             <el-descriptions-item label="电话号码">{{data.user?.phone}}</el-descriptions-item>
@@ -55,6 +55,12 @@
             <el-form-item label="邮箱" prop="email">
                 <el-input v-model="editData.email" autocomplete="off" placeholder="请输入邮箱"
                 />
+            </el-form-item>
+            <el-form-item label="性别" prop="sex">
+                <el-radio-group v-model="editData.sex"> <!-- 修改为绑定 editData.sex -->
+                    <el-radio value="1">男</el-radio>
+                    <el-radio value="2">女</el-radio>
+                </el-radio-group>
             </el-form-item>
             <el-form-item label="职业" prop="occupation">
                 <el-input v-model="editData.occupation" autocomplete="off" placeholder="请输入职业"
@@ -84,6 +90,7 @@
 
 <script setup>
 import { reactive, ref } from "vue";
+import { defineEmits } from "vue";
 import request from "../../utils/request.js";
 import { ElMessage } from "element-plus";
 import router from "@/router/index.js";
@@ -93,8 +100,10 @@ const formRef = ref(null);
 const data = reactive({
     user: JSON.parse(localStorage.getItem('code_user') || '{}'),
 });
-// 用于编辑的数据，初始化为data.user的副本
-let editData = reactive({...data.user });
+let editData = reactive({
+    ...data.user,
+    sex: data.user.sex || '1' // 初始化 sex 属性
+});
 
 const rules = reactive({
     username: [
@@ -117,6 +126,9 @@ const rules = reactive({
     address: [
         { required: true, message: '请输入联系地址', trigger: 'blur' },
     ],
+    sex: [
+        { required: true, message: '请选择性别', trigger: 'change' } // 添加 sex 验证规则
+    ]
 });
 
 const onBack = () => {
@@ -138,18 +150,23 @@ const submitForm = () => {
             } else if (data.user.role === 'USER') {
                 url = '/user/update';
             }
-            request.put(url, editData).then((res) => {
-                if (res.code === '200') {
-                    ElMessage.success("修改成功！");
-                    // 更新原始数据
-                    data.user = {...editData };
-                    localStorage.setItem('code_user', JSON.stringify(data.user));
-                    emit('updateUser');
-                    show.value = false;
-                } else {
-                    ElMessage.error(res.msg);
-                }
-            });
+            request.put(url, editData)
+                .then((res) => {
+                    if (res.code === '200') {
+                        ElMessage.success("修改成功！");
+                        // 更新原始数据
+                        data.user = {...editData };
+                        localStorage.setItem('code_user', JSON.stringify(data.user));
+                        emit('updateUser');
+                        show.value = false;
+                    } else {
+                        ElMessage.error(res.msg);
+                    }
+                })
+                .catch((error) => {
+                    ElMessage.error('网络请求失败，请稍后重试');
+                    console.error('请求出错:', error);
+                });
         } else {
             ElMessage.error('请填写完整且正确的信息');
         }

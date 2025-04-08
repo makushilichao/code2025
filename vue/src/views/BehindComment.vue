@@ -1,23 +1,17 @@
 <template>
     <div>
-        <div class="card" style="margin-bottom: 5px">
-            <el-input clearable @clear="load" style="width: 260px; margin-right: 5px" v-model="data.blogTitle"
-                      placeholder="请输入标题查询"
-                      :prefix-icon="Search" @keydown.enter="handleEnter"></el-input>
-            <el-button type="primary" @click="load">查 询</el-button>
-            <el-button type="" @click="reset">重 置</el-button>
-        </div>
-
+        <div class="card" style="margin-bottom: 10px"><el-icon style="margin-right: 10px; align-items: center; font-size: 13px"><BellFilled /></el-icon>您好，{{ data.user.name }}，以下是用户评论列表！</div>
         <div class="card" style="margin-bottom: 5px">
             <el-table :data="data.tableData" stripe style="width: 100%"
                       :header-cell-style="{color:'#333', backgroundColor:'#ddd'}"
             >
-                <el-table-column  label="头像" width="100">
+                <el-table-column label="头像" width="100">
                     <template #default="scope">
                         <el-image v-if="scope.row.avatar" :src="scope.row.avatar"
                                   style="width: 40px; height: 40px; border-radius: 50%; display: block"
-                                  :preview-src-list="[scope.row.avatar]"  :preview-teleported="true">
-                            ></el-image>
+                                  :preview-src-list="[scope.row.avatar]" :preview-teleported="true">
+                            >
+                        </el-image>
                     </template>
                 </el-table-column>
                 <el-table-column prop="userName" label="评论用户"/>
@@ -39,13 +33,13 @@
 
         <div class="card" style="margin-bottom: 5px">
             <el-pagination
-                v-model:current-page="data.pageNum"
-                v-model:page-size="data.pageSize"
-                layout="total, sizes, prev, pager, next, jumper"
-                :page-sizes="[5, 10, 20, 30]"
-                :total="data.total"
-                @current-change="load"
-                @size-change="load"
+                    v-model:current-page="data.pageNum"
+                    v-model:page-size="data.pageSize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :page-sizes="[5, 10, 20, 30]"
+                    :total="data.total"
+                    @current-change="load"
+                    @size-change="load"
             />
         </div>
 
@@ -84,6 +78,7 @@ const data = reactive({
     content: null,
     viewVisible: false,
     categoryData: [],
+    avatar: null,
 })
 
 const editorRef = shallowRef()
@@ -105,14 +100,10 @@ onBeforeUnmount(() => {
     }
 })
 
-const handleCreated = (editor) => {
-    editorRef.value = editor
-}
-
 const formRef = ref()
 
 const load = () => {
-    request.get('/comment/selectPage', {
+    request.get('/behindComment/selectPage', {
         params: {
             pageNum: data.pageNum,
             pageSize: data.pageSize,
@@ -131,20 +122,10 @@ const load = () => {
 
 load()
 
-const reset = () => {
-    data.blogTitle = null
-    load()
-}
-
-const handleAdd = () => {
-    data.form = {}
-    data.formVisible = true
-}
-
 const add = () => {
     formRef.value.validate((valid) => {
         if (valid) {
-            request.post('/comment/add', data.form).then(res => {
+            request.post('/behindComment/add', data.form).then(res => {
                 if (res.code === '200') {
                     data.formVisible = false
                     ElMessage.success("添加成功！")
@@ -158,7 +139,7 @@ const add = () => {
 }
 
 const update = () => {
-    request.put('/comment/update', data.form).then(res => {
+    request.put('/behindComment/update', data.form).then(res => {
         if (res.code === '200') {
             ElMessage.success("更新成功！")
             data.formVisible = false
@@ -180,7 +161,7 @@ const handleEdit = (row) => {
 
 const deleteRow = (id) => {
     ElMessageBox.confirm('此操作将永久删除该文件, 是否继续?', '提示', {type: 'warning'}).then(res => {
-        request.delete('/comment/delete/' + id).then(res => {
+        request.delete('/behindComment/delete/' + id).then(res => {
             if (res.code === '200') {
                 ElMessage.success("删除成功！")
                 load()
@@ -195,10 +176,6 @@ const deleteRow = (id) => {
 const handleEnter = (e) => {
     e.preventDefault()
     save()
-}
-
-const handleFileSuccess = (res) => {
-    data.form.img = res.data
 }
 
 const viewContent = (content) => {

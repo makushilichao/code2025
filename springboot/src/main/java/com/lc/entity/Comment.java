@@ -24,7 +24,6 @@ public class Comment implements Serializable {
     private String userName;
     private String avatar;
 
-    // 添加父评论 ID 属性，对应数据库中的 parent_comment_id 字段
     private Integer parentCommentId;
     // 添加回复数量属性，对应数据库中的 reply_count 字段
     private Integer replyCount;

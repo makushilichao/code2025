@@ -59,7 +59,7 @@
                             <House/>
                         </el-icon>
                         <span>首 页</span></el-menu-item>
-                    <el-sub-menu index="1"><!--v-if="data.user.role === 'ADMIN'"-->
+                    <el-sub-menu index="1" v-if="data.user.role === 'ADMIN'">
                         <template #title>
                             <el-icon>
                                 <User/>
@@ -89,7 +89,7 @@
                         <el-menu-item index="/manager/activity">活动信息</el-menu-item>
                         <el-menu-item index="/manager/activityCategory">活动分类</el-menu-item>
                     </el-sub-menu>
-                    <el-sub-menu index="4">
+                    <el-sub-menu index="4" v-if="data.user.role === 'ADMIN'">
                         <template #title>
                             <el-icon>
                                 <Setting/>

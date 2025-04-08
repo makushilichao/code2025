@@ -19,4 +19,5 @@ public class Admin extends Account{
     private String confirmPassword;
     private String occupation;
     private String address;
+    private Integer sex;
 }
